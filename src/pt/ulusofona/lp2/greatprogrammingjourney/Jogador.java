@@ -7,6 +7,8 @@ public class Jogador {
     String nome;
     String linguagemFavorita;
     String cor;
+    int posicao;
+    String estado;
 
     public Jogador(String id, String nome, String linguagemFavorita, String cor) {
         this.id = id;
@@ -26,4 +28,27 @@ public class Jogador {
             return false;
         }
     }
+    void inicializaJogador(){
+        this.posicao = 1;
+        this.estado = "Em Jogo";
+    }
+    int getId(){
+        return Integer.parseInt(this.id);
+    }
+    String getNome(){
+        return this.nome;
+    }
+    String getLinguagemFavorita(){
+        return this.linguagemFavorita;
+    }
+    String getCor(){
+        return this.cor.toUpperCase();
+    }
+    String getPosicao(){
+        return String.valueOf(this.posicao);
+    }
+    String getEstado(){
+        return this.estado;
+    }
+
 }

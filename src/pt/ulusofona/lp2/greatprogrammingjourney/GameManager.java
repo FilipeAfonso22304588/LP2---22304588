@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameManager {
+    ArrayList<Jogador> jogadores = new ArrayList<>();
+    boolean jogoFinalizado;
+    int tamanhoTabuleiro;
+
+    public GameManager() {
+    }
+
     public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
 
         ArrayList<Integer> idJaUtilizados = new ArrayList<>();
@@ -32,25 +39,48 @@ public class GameManager {
             String linguagemFavorita = jogadores[2];
             String cor = jogadores[3];
 
-            Jogador jogadorTeste = new Jogador(id,nome,linguagemFavorita,cor);
+            Jogador jogadorTeste = new Jogador(id, nome, linguagemFavorita, cor);
 
-            if (jogadorTeste.isAtributosInvalido(idJaUtilizados,coresPossiveis)){
+            if (jogadorTeste.isAtributosInvalido(idJaUtilizados, coresPossiveis)) {
                 return false;
+            } else {
+                jogadorTeste.inicializaJogador();
+                this.jogadores.add(jogadorTeste);
             }
         }
-
+        this.jogoFinalizado = false;
         return true;
     }
 
     public String getImagePng(int nrSquare) {
-        return "";
+        if (nrSquare == this.tamanhoTabuleiro) {
+            return "glory.png";
+        } else {
+            return null;
+        }
     }
 
     public String[] getProgrammerInfo(int id) {
-        return null;
+
+        Jogador jogadorEscolhido = null;
+
+        for (Jogador jogador : this.jogadores) {
+            if (jogador.getId() == id) {
+                jogadorEscolhido = jogador;
+            }
+        }
+
+        if (jogadorEscolhido == null) {
+            return null;
+        } else {
+            String[] resultado = {jogadorEscolhido.id, jogadorEscolhido.getNome(), jogadorEscolhido.getLinguagemFavorita(),
+                    jogadorEscolhido.getCor(), jogadorEscolhido.getPosicao()};
+            return resultado;
+        }
     }
 
     public String getProgrammerInfoAsStr(int id) {
+
         return "";
     }
 
