@@ -1,6 +1,8 @@
 package pt.ulusofona.lp2.greatprogrammingjourney;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Jogador {
     String id;
@@ -13,9 +15,29 @@ public class Jogador {
     public Jogador(String id, String nome, String linguagemFavorita, String cor) {
         this.id = id;
         this.nome = nome;
-        this.linguagemFavorita = linguagemFavorita;
+        this.linguagemFavorita = formataLinguagens(linguagemFavorita);
         this.cor = cor;
     }
+
+    String formataLinguagens(String linguagemNaoFormatada){
+
+        String linguagensFormatadas = "";
+
+        if (linguagemNaoFormatada != null && !linguagemNaoFormatada.isEmpty()) {
+
+            String[] linguagensDiferentes = linguagemNaoFormatada.split(";");
+            Arrays.sort(linguagensDiferentes);
+
+            for (int i = 0; i < linguagensDiferentes.length; i++) {
+                linguagensFormatadas += linguagensDiferentes[i];
+                if (i != linguagensDiferentes.length - 1 ){
+                    linguagensFormatadas += ";";
+                }
+            }
+        }
+        return linguagensFormatadas;
+    }
+
     boolean isAtributosInvalido(ArrayList<Integer> idsJaUtilizados, ArrayList<String> coresPossiveis) {
 
         int id = Integer.parseInt(this.id);
@@ -25,29 +47,37 @@ public class Jogador {
             return true;
         } else {
             idsJaUtilizados.add(id);
+            coresPossiveis.remove(cor);
             return false;
         }
     }
-    void inicializaJogador(){
+
+    void inicializaJogador() {
         this.posicao = 1;
         this.estado = "Em Jogo";
     }
-    int getId(){
+
+    int getId() {
         return Integer.parseInt(this.id);
     }
-    String getNome(){
+
+    String getNome() {
         return this.nome;
     }
-    String getLinguagemFavorita(){
+
+    String getLinguagemFavorita() {
         return this.linguagemFavorita;
     }
-    String getCor(){
+
+    String getCor() {
         return this.cor.toUpperCase();
     }
-    String getPosicao(){
+
+    String getPosicao() {
         return String.valueOf(this.posicao);
     }
-    String getEstado(){
+
+    String getEstado() {
         return this.estado;
     }
 
