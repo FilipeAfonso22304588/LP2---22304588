@@ -1,7 +1,10 @@
 package pt.ulusofona.lp2.greatprogrammingjourney;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class GameManager {
@@ -49,6 +52,7 @@ public class GameManager {
             }
         }
         this.jogoFinalizado = false;
+        jogadores.sort(Comparator.comparingInt(j -> Integer.parseInt(j.id)));
         return true;
     }
 
@@ -62,29 +66,45 @@ public class GameManager {
 
     public String[] getProgrammerInfo(int id) {
 
-        Jogador jogadorEscolhido = null;
+        if (id <= 0) {
+            return null;
+        }
+
+        String[] resultado = null;
 
         for (Jogador jogador : this.jogadores) {
             if (jogador.getId() == id) {
-                jogadorEscolhido = jogador;
+                resultado = new String[]{String.valueOf(jogador.getId()), jogador.getNome(), jogador.getLinguagemFavorita(),
+                        jogador.getCor(), jogador.getPosicao()};
             }
         }
-
-        if (jogadorEscolhido == null) {
-            return null;
-        } else {
-            String[] resultado = {jogadorEscolhido.id, jogadorEscolhido.getNome(), jogadorEscolhido.getLinguagemFavorita(),
-                    jogadorEscolhido.getCor(), jogadorEscolhido.getPosicao()};
-            return resultado;
-        }
+        return resultado;
     }
 
     public String getProgrammerInfoAsStr(int id) {
 
-        return "";
-    }
+        if (id <= 0) {
+            return null;
+        }
+
+        String resultado = null;
+
+        for (Jogador jogador : this.jogadores) {
+            if (jogador.getId() == id) {
+                resultado = jogador.id + " | " + jogador.getNome()+ " | " + jogador.getPosicao() + " | " +
+                        jogador.getLinguagemFavorita()+ " | " + jogador.getEstado();
+            }
+        }
+        return resultado;
+
+}
 
     public String[] getSlotInfo(int position) {
+
+        if (position < 1 || position > this.tamanhoTabuleiro){
+            return null;
+        }
+        
         return null;
     }
 

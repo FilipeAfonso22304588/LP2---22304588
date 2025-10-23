@@ -56,6 +56,9 @@ public class Jogador {
         this.posicao = 1;
         this.estado = "Em Jogo";
     }
+    void moveJogador(int resultadoDado){
+        this.posicao += resultadoDado;
+    }
 
     int getId() {
         return Integer.parseInt(this.id);
