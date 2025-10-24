@@ -14,10 +14,13 @@ public class Main {
         coresPossiveis.add("Purple");
 
         Jogador teste = new Jogador("123","123","","Orange");
-        Jogador teste2 = new Jogador("526","123","Java;C","Green");
+        Jogador teste2 = new Jogador("526","456","Java;C","Green");
 
-        System.out.println(teste.isAtributosInvalido(idJaUtilizados,coresPossiveis));
-        System.out.println(teste2.isAtributosInvalido(idJaUtilizados,coresPossiveis));
+       // System.out.println(teste.isAtributosInvalido(idJaUtilizados,coresPossiveis));
+       // System.out.println(teste2.isAtributosInvalido(idJaUtilizados,coresPossiveis));
+        int testeInt = -3;
+        testeInt += 4;
+        System.out.println(testeInt);
 
     }
 }

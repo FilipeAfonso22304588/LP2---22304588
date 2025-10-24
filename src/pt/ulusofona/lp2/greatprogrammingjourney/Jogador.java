@@ -59,6 +59,9 @@ public class Jogador {
     void moveJogador(int resultadoDado){
         this.posicao += resultadoDado;
     }
+    void setPosicao(int posicao){
+        this.posicao = posicao;
+    }
 
     int getId() {
         return Integer.parseInt(this.id);
@@ -76,8 +79,8 @@ public class Jogador {
         return this.cor.toUpperCase();
     }
 
-    String getPosicao() {
-        return String.valueOf(this.posicao);
+    int getPosicao() {
+        return this.posicao;
     }
 
     String getEstado() {

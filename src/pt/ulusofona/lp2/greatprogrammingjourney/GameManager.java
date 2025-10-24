@@ -1,18 +1,23 @@
 package pt.ulusofona.lp2.greatprogrammingjourney;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class GameManager {
-    ArrayList<Jogador> jogadores = new ArrayList<>();
+    ArrayList<Integer> idsJogadores;
+    HashMap<Integer,Jogador> listaJogadores;
     boolean jogoFinalizado;
     int tamanhoTabuleiro;
+    int nrTurnos;
 
     public GameManager() {
+        this.idsJogadores = new ArrayList<>();
+        this.listaJogadores = new HashMap<>();
+        this.jogoFinalizado = false;
+        this.nrTurnos = 1;
     }
 
     public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
@@ -48,11 +53,12 @@ public class GameManager {
                 return false;
             } else {
                 jogadorTeste.inicializaJogador();
-                this.jogadores.add(jogadorTeste);
+                this.idsJogadores.add(jogadorTeste.getId());
+                this.listaJogadores.put(jogadorTeste.getId(),jogadorTeste);
             }
         }
         this.jogoFinalizado = false;
-        jogadores.sort(Comparator.comparingInt(j -> Integer.parseInt(j.id)));
+        Collections.sort(this.idsJogadores);
         return true;
     }
 
@@ -72,10 +78,10 @@ public class GameManager {
 
         String[] resultado = null;
 
-        for (Jogador jogador : this.jogadores) {
+        for (Jogador jogador : this.listaJogadores.values()) {
             if (jogador.getId() == id) {
                 resultado = new String[]{String.valueOf(jogador.getId()), jogador.getNome(), jogador.getLinguagemFavorita(),
-                        jogador.getCor(), jogador.getPosicao()};
+                        jogador.getCor(), String.valueOf(jogador.getPosicao())};
             }
         }
         return resultado;
@@ -89,47 +95,111 @@ public class GameManager {
 
         String resultado = null;
 
-        for (Jogador jogador : this.jogadores) {
+        for (Jogador jogador : this.listaJogadores.values()) {
             if (jogador.getId() == id) {
-                resultado = jogador.id + " | " + jogador.getNome()+ " | " + jogador.getPosicao() + " | " +
-                        jogador.getLinguagemFavorita()+ " | " + jogador.getEstado();
+                resultado = jogador.id + " | " + jogador.getNome() + " | " + jogador.getPosicao() + " | " +
+                        jogador.getLinguagemFavorita() + " | " + jogador.getEstado();
             }
         }
         return resultado;
 
-}
+    }
 
     public String[] getSlotInfo(int position) {
 
-        if (position < 1 || position > this.tamanhoTabuleiro){
+        String[] jogadoresPresentesNaPosicao = new String[]{""};
+
+        if (position < 1 || position > this.tamanhoTabuleiro) {
             return null;
         }
-        
-        return null;
+
+        for (Jogador jogador : this.listaJogadores.values()) {
+            if (jogador.getPosicao() == position) {
+                jogadoresPresentesNaPosicao[0] += String.valueOf(jogador.getPosicao());
+            }
+        }
+
+        return jogadoresPresentesNaPosicao;
     }
 
     public int getCurrentPlayerID() {
-        return 0;
+        int idPrimeiroJogador = this.idsJogadores.get(0);
+        Jogador primeiroJogador = listaJogadores.get(idPrimeiroJogador);
+        this.idsJogadores.remove(0);
+        this.idsJogadores.add(primeiroJogador.getId());
+        return primeiroJogador.getId();
     }
 
     public boolean moveCurrentPlayer(int nrSpaces) {
-        return true;
+        if (nrSpaces < 1 || nrSpaces > 6) {
+            return false;
+        }
+
+        //obter jogador que vai jogar a seguir, e já o colocar como último da fila
+        int idJogadorAtual = getCurrentPlayerID();
+
+        //implemetar função para isto
+        if (this.listaJogadores.get(idJogadorAtual).getPosicao() + nrSpaces > this.tamanhoTabuleiro) {
+            int excesso = (this.listaJogadores.get(idJogadorAtual).getPosicao() + nrSpaces) - this.tamanhoTabuleiro;
+            this.listaJogadores.get(idJogadorAtual).setPosicao(this.tamanhoTabuleiro - excesso);
+            this.nrTurnos++;
+            return true;
+        } else {
+            this.listaJogadores.get(idJogadorAtual).moveJogador(nrSpaces);
+            this.nrTurnos++;
+            return true;
+        }
     }
 
     public boolean gameIsOver() {
-        return true;
+        for (Jogador jogador : this.listaJogadores.values()) {
+            if (jogador.getPosicao() == this.tamanhoTabuleiro){
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<String> getGameResults() {
+
+        ArrayList<String> resultado = new ArrayList<>();
+        ArrayList<Jogador> jogadoresFimDeJogo = new ArrayList<>();
+
+        for (Jogador jogador : listaJogadores.values()) {
+            jogadoresFimDeJogo.add(jogador);
+        }
+
+        jogadoresFimDeJogo.sort(Comparator.comparingInt(Jogador::getPosicao).reversed());
+
+        resultado.add("THE GREAT PROGRAMMING JOURNEY");
+        resultado.add("");
+        resultado.add("NR. DE TURNOS");
+        resultado.add(String.valueOf(this.nrTurnos));
+        resultado.add("");
+        resultado.add("VENCEDOR");
+        resultado.add(jogadoresFimDeJogo.get(0).getNome());
+        jogadoresFimDeJogo.remove(0);
+        resultado.add("");
+        resultado.add("RESTANTES");
+        for (Jogador jogador : jogadoresFimDeJogo) {
+            resultado.add(jogador.getNome() + " " + jogador.getPosicao());
+        }
+
         return null;
     }
 
     public JPanel getAuthorsPanel() {
+        JPanel panel = new JPanel();
         return null;
     }
 
     public HashMap<String, String> customizeBoard() {
-        return null;
+        HashMap<String,String> resultado = new HashMap<>();
+        resultado.put("playerBlueImage","#FFFFFF");
+        resultado.put("playerGreenImage","#FFFFFF");
+        resultado.put("playerBrownImage","#FFFFFF");
+        resultado.put("playerPurpleImage","#FFFFFF");
+        return resultado;
     }
 
 
