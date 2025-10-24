@@ -1,14 +1,11 @@
 package pt.ulusofona.lp2.greatprogrammingjourney;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public class GameManager {
     ArrayList<Integer> idsJogadores;
-    HashMap<Integer,Jogador> listaJogadores;
+    HashMap<Integer, Jogador> listaJogadores;
     boolean jogoFinalizado;
     int tamanhoTabuleiro;
     int nrTurnos;
@@ -18,6 +15,7 @@ public class GameManager {
         this.listaJogadores = new HashMap<>();
         this.jogoFinalizado = false;
         this.nrTurnos = 1;
+        this.tamanhoTabuleiro = 0;
     }
 
     public boolean createInitialBoard(String[][] playerInfo, int worldSize) {
@@ -34,6 +32,7 @@ public class GameManager {
         if (worldSize < playerInfo.length * 2 || playerInfo.length < 2 || playerInfo.length > 4) {
             return false;
         }
+        tamanhoTabuleiro = worldSize;
 
         //Verifica jogador a jogador se os dados estão bem
         for (String[] jogadores : playerInfo) {
@@ -47,14 +46,13 @@ public class GameManager {
             String linguagemFavorita = jogadores[2];
             String cor = jogadores[3];
 
-            Jogador jogadorTeste = new Jogador(id, nome, linguagemFavorita, cor);
+            Jogador jogadorTeste = new Jogador(id, nome, linguagemFavorita, cor, worldSize);
 
             if (jogadorTeste.isAtributosInvalido(idJaUtilizados, coresPossiveis)) {
                 return false;
             } else {
-                jogadorTeste.inicializaJogador();
                 this.idsJogadores.add(jogadorTeste.getId());
-                this.listaJogadores.put(jogadorTeste.getId(),jogadorTeste);
+                this.listaJogadores.put(jogadorTeste.getId(), jogadorTeste);
             }
         }
         this.jogoFinalizado = false;
@@ -108,6 +106,7 @@ public class GameManager {
     public String[] getSlotInfo(int position) {
 
         String[] jogadoresPresentesNaPosicao = new String[]{""};
+        int count = 0;
 
         if (position < 1 || position > this.tamanhoTabuleiro) {
             return null;
@@ -115,7 +114,12 @@ public class GameManager {
 
         for (Jogador jogador : this.listaJogadores.values()) {
             if (jogador.getPosicao() == position) {
-                jogadoresPresentesNaPosicao[0] += String.valueOf(jogador.getPosicao());
+                if (count == 0) {
+                    jogadoresPresentesNaPosicao[0] += jogador.getId();
+                    count++;
+                } else {
+                    jogadoresPresentesNaPosicao[0] += "," + jogador.getId();
+                }
             }
         }
 
@@ -123,11 +127,7 @@ public class GameManager {
     }
 
     public int getCurrentPlayerID() {
-        int idPrimeiroJogador = this.idsJogadores.get(0);
-        Jogador primeiroJogador = listaJogadores.get(idPrimeiroJogador);
-        this.idsJogadores.remove(0);
-        this.idsJogadores.add(primeiroJogador.getId());
-        return primeiroJogador.getId();
+        return this.idsJogadores.get(0);
     }
 
     public boolean moveCurrentPlayer(int nrSpaces) {
@@ -143,17 +143,23 @@ public class GameManager {
             int excesso = (this.listaJogadores.get(idJogadorAtual).getPosicao() + nrSpaces) - this.tamanhoTabuleiro;
             this.listaJogadores.get(idJogadorAtual).setPosicao(this.tamanhoTabuleiro - excesso);
             this.nrTurnos++;
+            int idPrimeiroJogador = this.idsJogadores.get(0);
+            this.idsJogadores.remove(0);
+            this.idsJogadores.add(idPrimeiroJogador);
             return true;
         } else {
             this.listaJogadores.get(idJogadorAtual).moveJogador(nrSpaces);
             this.nrTurnos++;
+            int idPrimeiroJogador = this.idsJogadores.get(0);
+            this.idsJogadores.remove(0);
+            this.idsJogadores.add(idPrimeiroJogador);
             return true;
         }
     }
 
     public boolean gameIsOver() {
         for (Jogador jogador : this.listaJogadores.values()) {
-            if (jogador.getPosicao() == this.tamanhoTabuleiro){
+            if (jogador.getPosicao() == this.tamanhoTabuleiro) {
                 return true;
             }
         }
@@ -185,7 +191,7 @@ public class GameManager {
             resultado.add(jogador.getNome() + " " + jogador.getPosicao());
         }
 
-        return null;
+        return resultado;
     }
 
     public JPanel getAuthorsPanel() {
@@ -194,11 +200,7 @@ public class GameManager {
     }
 
     public HashMap<String, String> customizeBoard() {
-        HashMap<String,String> resultado = new HashMap<>();
-        resultado.put("playerBlueImage","#FFFFFF");
-        resultado.put("playerGreenImage","#FFFFFF");
-        resultado.put("playerBrownImage","#FFFFFF");
-        resultado.put("playerPurpleImage","#FFFFFF");
+        HashMap<String, String> resultado = new HashMap<>();
         return resultado;
     }
 
