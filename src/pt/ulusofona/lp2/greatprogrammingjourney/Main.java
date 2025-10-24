@@ -27,7 +27,7 @@ public class Main {
         novo.listaJogadores.put(teste.getId(),teste);
         novo.listaJogadores.put(teste2.getId(),teste2);
         System.out.println(Arrays.toString(novo.getSlotInfo(5)));
-        //teste para o github aaaaaaaaaaaaa
+        //teste para o github
 
 
     }
